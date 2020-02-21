@@ -2,12 +2,24 @@ import '../webapp/css/custom.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {Editor, EditorState} from 'draft-js';
 
 class MainPage extends React.Component {
-    render() {
-        return <div className="main">Hi this is for docs 메인 페이지</div>;
+    constructor(props) {
+        super(props);
+        this.state = {editorState: EditorState.createEmpty()};
+        this.onChange = editorState => this.setState({editorState});
     }
-
+    render() {
+        return (
+            <>
+                <h3>Text Area</h3>
+                <div style={{ border: '2px solid black' }}>
+                    <Editor editorState={this.state.editorState} onChange={this.onChange} />
+                </div>
+            </>
+        );
+    }
 }
 
-ReactDOM.render(<MainPage/>, document.getElementById('root'));
+ReactDOM.render(<MainPage />, document.getElementById('root'));

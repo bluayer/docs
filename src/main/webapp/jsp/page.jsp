@@ -7,7 +7,6 @@
 
 <body>
     <div id="root"></div>
-    <a> hihihihih </a>
     <script src="/js/react/${pageName}.bundle.js"></script>
 </body>
 </html>
