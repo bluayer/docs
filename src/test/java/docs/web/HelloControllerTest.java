@@ -29,7 +29,5 @@ public class HelloControllerTest {
 
         //then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        System.out.println(body);
-        assertThat(body).contains("hihihihih");
     }
 }
