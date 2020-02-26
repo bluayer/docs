@@ -2,7 +2,7 @@ import '../webapp/css/custom.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Router } from 'react-router-dom';
+import { BrowserRouter, Route, Router, Link } from 'react-router-dom';
 import MainPage from './MainPage.jsx';
 import Page1Page from './Page1Page.jsx';
 
@@ -12,8 +12,14 @@ class AppPage extends React.Component {
             <div>
                 <h2>HIHI</h2>
                 <BrowserRouter>
-                    <Route path="/" component={MainPage}/>
-                    <Route path="/" component={Page1Page}/>
+                    <li>
+                        <Link to="/home">Home</Link>
+                    </li>
+                    <li>
+                        <Link to="/page">Page</Link>
+                    </li>
+                    <Route path="/home" component={MainPage}/>
+                    <Route path="/page" component={Page1Page}/>
                 </BrowserRouter>
             </div>
         );
