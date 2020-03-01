@@ -1,5 +1,3 @@
-import '../webapp/css/custom.css';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -86,4 +84,4 @@ class AppPage extends React.Component {
     }
 }
 
-ReactDOM.render(<AppPage />, document.getElementById('root'));
+export default AppPage;

@@ -1,12 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {Editor, EditorState, RichUtils, convertToRaw, convertFromRaw} from 'draft-js';
 import debounce from 'lodash/debounce';
 
-class MainPage extends React.Component {
+class NotePage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { editorState: EditorState.createEmpty() };
+        this.state = {
+            id: props.match.params.id,
+            editorState: EditorState.createEmpty()
+        };
     }
     
     onChange = (editorState) => {
@@ -19,14 +21,13 @@ class MainPage extends React.Component {
     }
 
     saveContent = debounce((content) => {
-        const draftId = 1
         const convertedData = {
             title: "TEST",
             // author: "testUser",
             content: JSON.stringify(convertToRaw(content))
         };
         // console.log("CONVERtedData",JSON.stringify(convertedData));
-        fetch('/api/v1/posts/1', {
+        fetch('/api/v1/posts/'+this.state.id, {
             method: 'PUT',
             body: JSON.stringify(convertedData),
             headers: new Headers({
@@ -39,7 +40,7 @@ class MainPage extends React.Component {
     }, 1000);    
 
     componentDidMount() {
-        fetch('/api/v1/posts/1')
+        fetch('/api/v1/posts/'+this.state.id)
         .then(response => response.json())
         .then(data => {
             let { content } = data;
@@ -50,6 +51,7 @@ class MainPage extends React.Component {
                 this.setState({ editorState: EditorState.createEmpty() });
             }
         });
+        console.log(this.state.id);
     }
 
     handleKeyCommand = (command) => {
@@ -82,5 +84,5 @@ class MainPage extends React.Component {
     }
     
 }
-export default MainPage;
-// ReactDOM.render(<MainPage />, document.getElementById('root'));
+export default NotePage;
+// ReactDOM.render(<NotePage />, document.getElementById('root'));

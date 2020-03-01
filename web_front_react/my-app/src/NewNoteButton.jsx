@@ -1,8 +1,9 @@
 import React from 'react';
-import { Editor, EditorState, convertToRaw } from 'draft-js';
+import ReactDOM from 'react-dom';
+import {Editor, EditorState, RichUtils, convertToRaw, convertFromRaw} from 'draft-js';
 import Button from '@material-ui/core/Button';
 
-class Page1Page extends React.Component {
+class NewNoteButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = { editorState: EditorState.createEmpty() };
@@ -30,11 +31,11 @@ class Page1Page extends React.Component {
 
     render() {
         return(
-        <Button variant="contained" color="primary" onClick={this.onClickHandler}>
-            Add Note
-        </Button>
+            <Button variant="outlined" onClick={this.onClickHandler}>
+                Add Note
+            </Button>
         );
     }
 
 }
-export default Page1Page
+export default NewNoteButton;
