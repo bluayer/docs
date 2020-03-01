@@ -24,8 +24,8 @@ public class HelloControllerTest {
     public void mainpage_load() {
         // when
         ResponseEntity<String> entity
-                = this.restTemplate.getForEntity("/main.html", String.class);
-        String body = this.restTemplate.getForObject("/main.html", String.class);
+                = this.restTemplate.getForEntity("/", String.class);
+        String body = this.restTemplate.getForObject("/", String.class);
 
         //then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
