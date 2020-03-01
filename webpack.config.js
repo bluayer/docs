@@ -7,8 +7,9 @@ const path = require('path');
 module.exports = {
     context: path.resolve(__dirname, 'src/main/jsx'),
     entry: {
+        app: './AppPage.jsx',
         main: './MainPage.jsx',
-        page1: './Page1Page.jsx'
+        home: './Page1Page.jsx'
     },
     devtool: 'sourcemaps',
     cache: true,

@@ -2,11 +2,11 @@
 <!doctype html>
 <html>
 <head>
-     <title>${pageName}</title>
+     <title>APP page</title>
 </head>
 
 <body>
     <div id="root"></div>
-    <script src="/js/react/${pageName}.bundle.js"></script>
+    <script src="/js/react/app.bundle.js"></script>
 </body>
 </html>
