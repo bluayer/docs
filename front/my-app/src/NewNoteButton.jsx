@@ -23,7 +23,13 @@ class NewNoteButton extends React.Component {
                 'Content-Type': 'application/json; charset=utf8'
             })
         })
-        .then(response => console.log('SUCCESS:', response))
+        .then((response) => {
+            console.log('SUCCESS:', response)
+            return response.json();
+        })
+        .then(data => {
+            console.log('data is >>>> ', data);
+        })
         .catch(error => console.error('Error: ', error))
         // TODO: get noteId from POST response
         // route to local/main/{id}

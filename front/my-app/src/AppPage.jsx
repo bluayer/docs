@@ -71,8 +71,9 @@ class AppPage extends React.Component {
                     this.setState({noteList: json});
                 })
             );
+            console.log("This is not test");
         }
-        // console.log(this.state.noteList)
+        console.log(this.state.noteList)
     }
 
     render() {
