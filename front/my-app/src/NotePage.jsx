@@ -3,6 +3,8 @@ import {
   Editor, EditorState, RichUtils, convertToRaw, convertFromRaw,
 } from 'draft-js';
 import debounce from 'lodash/debounce';
+import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
 // import './NotePage.css';
 
 
@@ -14,8 +16,16 @@ class NotePage extends React.Component {
       id: props.match.params.id,
       title: "",
       editorState: EditorState.createEmpty(),
+      styles : {
+        notePageBox : {
+          margin: 'auto',
+          marginTop: 100,
+          width: 800,
+          font: "sans-serif",
+      },
+      }
     };
-    this.handleChange = this.handleChange.bind(this);
+    this.onTitleChange = this.onTitleChange.bind(this);
     this.onChange = this.onChange.bind(this);
     this.saveContent = this.saveContent.bind(this);
   }
@@ -64,7 +74,7 @@ class NotePage extends React.Component {
     console.log(this.state.id);
   }
 
-  handleChange(event) {
+  onTitleChange(event) {
     this.setState({title: event.target.value});
   }
 
@@ -76,8 +86,15 @@ class NotePage extends React.Component {
     }
     return 'not-handled';
   }
-
+  _onBoldClick() {
+    this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'BOLD'));
+  }
+  _onToggleCode() {
+    this.onChange(RichUtils.toggleCode(this.state.editorState));
+  }
   render() {
+    const styles = this.state.styles;
+
     if (!this.state.editorState) {
       return (
                 <h3 className="loading">
@@ -86,7 +103,7 @@ class NotePage extends React.Component {
       );
     }
     return (
-      <>
+      <div style={styles.notePageBox}>
         <h3>Text Area</h3>
         {/* <div>
           <label for="inp" class="inp">
@@ -96,15 +113,18 @@ class NotePage extends React.Component {
             </svg>
           </label>
         </div> */}
-
-        <div style={{ border: '2px solid black' }}>
+        <TextField required id="standard-required" defaultValue="" onChange={this.onTitleChange} placeholder="Title"/>
+        <p></p>
+        <div >
+          <button onClick={this._onBoldClick.bind(this)}>Bold</button>
+          <button onClick={this._onToggleCode.bind(this)}>Code Block</button>
           <Editor
               editorState={this.state.editorState}
               onChange={this.onChange}
-              handleKeyCommand={this.handleKeyCommand}
+              handleKeyCommand={this.handleKeyCommand.bind(this)}
           />
         </div>
-      </>
+      </div>
     );
   }
 }
