@@ -4,6 +4,9 @@ import debounce from 'lodash/debounce';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { Editor } from 'react-draft-wysiwyg';
+import Button from '@material-ui/core/Button';
+import PropTypes from "prop-types";
+import { withRouter } from "react-router";
 import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import './NotePage.css';
 // import './NotePage.css';
@@ -31,6 +34,7 @@ class NotePage extends React.Component {
     };
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onEditorStateChange = this.onEditorStateChange.bind(this);
+    this.onClickHandler = this.onClickHandler.bind(this);
     // this.saveContent = this.saveContent.bind(this);
   }
 
@@ -50,6 +54,7 @@ class NotePage extends React.Component {
     this.saveContent(contentState);
     console.log(JSON.stringify(convertToRaw(contentState)));
   };
+
   saveContent = debounce((content) => {
       console.log("HIHI")
       const convertedData = {
@@ -88,9 +93,13 @@ class NotePage extends React.Component {
     this.setState({title: event.target.value});
   }
 
+  onClickHandler() {
+    this.props.history.push('/home');
+  }
 
   render() {
     const styles = this.state.styles;
+    const { match, location, history } = this.props;
 
     if (!this.state.editorState) {
       return (
@@ -101,22 +110,28 @@ class NotePage extends React.Component {
     }
     return (
       <div style={styles.notePageBox}>
-        {/* <h3>Text Area</h3> */}
-        <TextField required id="standard-required" defaultValue="" onChange={this.onTitleChange} placeholder="Title"/>
-        <p></p>
-        <div >
-          <Editor
-            class="demo-editor"
-            editorState={this.state.editorState}
-            wrapperClassName="demo-wrapper"
-            editorClassName="demo-editor"
-            onEditorStateChange={this.onEditorStateChange}
-          />
-
+        <Button onClick={this.onClickHandler}>Home</Button>
+        <div>
+          {/* <h3>Text Area</h3> */}
+          <TextField required id="standard-required" defaultValue="" onChange={this.onTitleChange} placeholder="Title"/>
+          <p></p>
+          <div >
+            <Editor
+              class="demo-editor"
+              editorState={this.state.editorState}
+              wrapperClassName="demo-wrapper"
+              editorClassName="demo-editor"
+              onEditorStateChange={this.onEditorStateChange}
+            />
+          </div>
         </div>
       </div>
     );
   }
 }
-export default NotePage;
+
+const NotePageWithRouter = withRouter(NotePage);
+export default NotePageWithRouter;
+
+// export default NotePage;
 // ReactDOM.render(<NotePage />, document.getElementById('root'));
