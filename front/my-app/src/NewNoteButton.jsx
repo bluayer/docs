@@ -3,13 +3,21 @@ import {
   EditorState, convertToRaw,
 } from 'draft-js';
 import Button from '@material-ui/core/Button';
+import PropTypes from "prop-types";
+import { withRouter } from "react-router";
+import { BrowserRouter, Route } from 'react-router-dom';
 
 class NewNoteButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = { editorState: EditorState.createEmpty() };
+    this.onClickHandler = this.onClickHandler.bind(this);
   }
-
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
+  };
   onClickHandler() {
     const contentState = this.state.editorState.getCurrentContent();
     const convertedData = {
@@ -30,13 +38,17 @@ class NewNoteButton extends React.Component {
       })
       .then((data) => {
         console.log('data is >>>> ', data);
-      })
-      .catch((error) => console.error('Error: ', error));
+        this.props.history.push('/page/'+data);
+      }).catch((error) => console.error('Error: ', error));
+      
+
     // TODO: get noteId from POST response
     // route to local/main/{id}
+
   }
 
   render() {
+    const { match, location, history } = this.props;
     return (
             <Button variant="outlined" onClick={this.onClickHandler}>
                 Add Note
@@ -44,4 +56,5 @@ class NewNoteButton extends React.Component {
     );
   }
 }
-export default NewNoteButton;
+const ShowTheLocationWithRouter = withRouter(NewNoteButton);
+export default ShowTheLocationWithRouter;
