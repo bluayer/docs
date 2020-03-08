@@ -82,6 +82,7 @@ class AppPage extends React.Component {
             <>
                 <BrowserRouter>
                     <Route path="/home">
+                        <a className="btn btn-block social-btn google" href="http://localhost:8080/api/v1/posts">Log in with Google</a>
                         <div style={styles.homePageBox}>
                             <h2 style={{ display: 'flex', justifyContent: 'center' }}>Mini Docs</h2>
                             <div style={styles.button}>
