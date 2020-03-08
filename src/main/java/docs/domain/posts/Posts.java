@@ -1,6 +1,7 @@
 package docs.domain.posts;
 
 import docs.domain.BaseTimeEntity;
+import docs.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class Posts extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @Column
     private String author;
 
     @Builder
