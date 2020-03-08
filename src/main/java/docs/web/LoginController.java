@@ -2,49 +2,40 @@ package docs.web;
 
 import docs.config.auth.LoginUser;
 import docs.config.auth.dto.SessionUser;
-import docs.domain.user.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
-import javax.mail.Session;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 public class LoginController {
 
     @GetMapping("/api/v1/login/{service}")
-    public String login( @PathVariable("service") String service) {
-        if (service == "google") {
-            return "/oauth2/authorization/google";
+    public RedirectView login(@PathVariable("service") String service) {
+        if (service.equals("google")) {
+            return new RedirectView("/oauth2/authorization/google");
         }
 
-        return "/error";
+        return new RedirectView("/api/v1/login/user");
     }
 
     @GetMapping("/api/v1/login/user")
     @ResponseBody
-    public SessionUser getUser (@LoginUser SessionUser user) {
+    public Map<String, String> getUser (@LoginUser SessionUser user) {
+        Map<String, String> map = new HashMap<>();
         if (user != null) {
-            return user;
+            map.put("login", "success");
+            map.put("name", user.getName());
+            map.put("email", user.getEmail());
+            map.put("picture", user.getPicture());
+        } else {
+            map.put("login", "fail");
         }
-        return null;
+        return map;
     }
-
-//    public String username(@LoginUser SessionUser user) {
-//
-//        if(user != null) {
-//           return user.getName();
-//        }
-//
-//        return "Wrong";
-//    }
 }

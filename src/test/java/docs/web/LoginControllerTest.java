@@ -22,8 +22,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -56,15 +56,33 @@ public class LoginControllerTest {
     @Test
     public void user_login_google() throws Exception {
         //given
-
         String url = "http://localhost:" + port + "/api/v1/login/"+"google";
 
         //when
-        MvcResult result = mvc.perform(post(url)
+        MvcResult result = mvc.perform(get(url)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().is(302))
                 .andReturn();
 
         //then
     }
+
+    @Test
+    public void get_user_before_login() throws Exception {
+        //given
+        String url = "http://localhost:" + port + "/api/v1/login/"+"user";
+
+        //when
+        MvcResult result = mvc.perform(get(url)
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        //then
+        // System.out.println(content);
+        assertThat(content.contains("fail")).isTrue();
+    }
+
 }
