@@ -1,29 +1,30 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/prop-types */
 import React from 'react';
-import {
-  EditorState, convertToRaw,
-} from 'draft-js';
+import { EditorState, convertToRaw } from 'draft-js';
 import Button from '@material-ui/core/Button';
-import PropTypes from "prop-types";
-import { withRouter } from "react-router";
-import { BrowserRouter, Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 
 class NewNoteButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = { editorState: EditorState.createEmpty() };
     this.onClickHandler = this.onClickHandler.bind(this);
+    this.UNSAFE_componentWillReceivePropspropTypes = {
+      match: PropTypes.object.isRequired,
+      location: PropTypes.object.isRequired,
+      history: PropTypes.object.isRequired,
+    };
   }
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
-  };
+
   onClickHandler() {
-    const contentState = this.state.editorState.getCurrentContent();
+    const contentState = this.state;
+    const currentContent = contentState.editorState.getCurrentContent();
     const convertedData = {
-      title: 'TEST',
+      title: '',
       // author: "testUser",
-      content: JSON.stringify(convertToRaw(contentState)),
+      content: JSON.stringify(convertToRaw(currentContent)),
     };
     fetch('/api/v1/posts', {
       method: 'POST',
@@ -32,27 +33,22 @@ class NewNoteButton extends React.Component {
         'Content-Type': 'application/json; charset=utf8',
       }),
     })
-      .then((response) => {
+      .then(response => {
         console.log('SUCCESS:', response);
         return response.json();
       })
-      .then((data) => {
+      .then(data => {
         console.log('data is >>>> ', data);
-        this.props.history.push('/page/'+data);
-      }).catch((error) => console.error('Error: ', error));
-      
-
-    // TODO: get noteId from POST response
-    // route to local/main/{id}
-
+        this.props.history.push(`/page/${data}`);
+      })
+      .catch(error => console.error('Error: ', error));
   }
 
   render() {
-    const { match, location, history } = this.props;
     return (
-            <Button variant="outlined" onClick={this.onClickHandler}>
-                Add Note
-            </Button>
+      <Button variant="outlined" onClick={this.onClickHandler}>
+        Add Note
+      </Button>
     );
   }
 }
