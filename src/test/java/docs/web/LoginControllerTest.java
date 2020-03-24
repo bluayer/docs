@@ -4,6 +4,7 @@ import docs.config.auth.dto.SessionUser;
 import docs.domain.user.Role;
 import docs.domain.user.User;
 import docs.domain.user.UserRepository;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+
 import org.springframework.mock.web.MockHttpSession;
+
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -129,5 +132,4 @@ public class LoginControllerTest {
         assertThat(content.contains("fail")).isFalse();
         assertThat(content.contains("송정우")).isTrue();
     }
-
 }

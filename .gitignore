@@ -123,4 +123,7 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+# Social login info
+src/main/resources/application-google.properties
+
 # End of https://www.gitignore.io/api/react,intellij+all

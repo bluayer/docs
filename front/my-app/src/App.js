@@ -1,10 +1,8 @@
 import React from 'react';
-import { Redirect, BrowserRouter, Switch} from 'react-router-dom';
-import AppPage from './AppPage';
+import LoginPage from './LoginPage';
+
 function App() {
-  return (
-    <AppPage />
-  );
+  return <LoginPage />;
 }
 
 export default App;
