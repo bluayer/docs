@@ -33,7 +33,7 @@ public class User extends BaseTimeEntity {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<Posts> posts = new ArrayList<>();
+    private List<Posts> posts;
 
     @Builder
     public User(String name, String email, String picture, Role role) {
@@ -41,6 +41,7 @@ public class User extends BaseTimeEntity {
         this.email = email;
         this.picture = picture;
         this.role = role;
+        this.posts = new ArrayList<>();
     }
 
     public User update(String name, String picture) {
