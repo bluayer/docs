@@ -1,5 +1,7 @@
 package docs.web;
 
+import docs.config.auth.LoginUser;
+import docs.config.auth.dto.SessionUser;
 import docs.service.PostsService;
 import docs.web.dto.PostsListResponseDto;
 import docs.web.dto.PostsResponseDto;
@@ -17,8 +19,9 @@ public class PostsApiController {
     private final PostsService postsService;
 
     @PostMapping("/api/v1/posts")
-    public Long save(@RequestBody PostsSaveRequestDto requestDto) {
-        return postsService.save(requestDto);
+    public Long save(@RequestBody PostsSaveRequestDto requestDto, @LoginUser SessionUser user) {
+        System.out.println("======+" + user.getEmail());
+        return postsService.save(requestDto, user.getEmail());
     }
 
     @PutMapping("/api/v1/posts/{id}")
@@ -27,8 +30,8 @@ public class PostsApiController {
     }
 
     @GetMapping("/api/v1/posts")
-    public List<PostsListResponseDto> findAll() {
-        return postsService.findAllDesc();
+    public List<PostsListResponseDto> findAll(@LoginUser SessionUser user) {
+        return postsService.findAllDescById(user.getEmail());
     }
 
     @GetMapping("/api/v1/posts/{id}")

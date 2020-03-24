@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -19,7 +22,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column
@@ -28,6 +31,9 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Posts> posts = new ArrayList<>();
 
     @Builder
     public User(String name, String email, String picture, Role role) {
@@ -40,6 +46,18 @@ public class User extends BaseTimeEntity {
     public User update(String name, String picture) {
         this.name = name;
         this.picture = picture;
+
+        return this;
+    }
+
+    public User update(List<Posts> posts) {
+        this.posts.addAll(posts);
+
+        return this;
+    }
+
+    public User update(Posts posts) {
+        this.posts.add(posts);
 
         return this;
     }

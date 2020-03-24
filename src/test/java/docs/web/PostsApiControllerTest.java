@@ -1,10 +1,13 @@
 package docs.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import docs.config.auth.dto.SessionUser;
+
 import docs.domain.posts.Posts;
 import docs.domain.posts.PostsRepository;
-import docs.web.dto.PostsListResponseDto;
-import docs.web.dto.PostsResponseDto;
+import docs.domain.user.Role;
+import docs.domain.user.User;
+import docs.domain.user.UserRepository;
 import docs.web.dto.PostsSaveRequestDto;
 import docs.web.dto.PostsUpdateRequestDto;
 import org.junit.After;
@@ -15,16 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
+
 import org.springframework.http.*;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
+
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,18 +53,43 @@ public class PostsApiControllerTest {
 
     private MockMvc mvc;
 
+    private MockHttpSession session;
+
+    @Autowired
+    UserRepository userRepository;
+
+    private User user;
+
     @Before
     public void setup() {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-    }
 
+        String name = "송정우";
+        String email = "wjddn0728@naver.com";
+        String picture = "hola/dhdhf";
+        Role role = Role.USER;
+
+
+        user = userRepository.save(User.builder()
+                .name(name)
+                .email(email)
+                .picture(picture)
+                .role(role)
+                .build()
+        );
+
+        session = new MockHttpSession();
+        SessionUser sUser = new SessionUser(user);
+        session.setAttribute("user", sUser);
+    }
 
     @After
     public void tearDown() throws Exception {
         postsRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -72,13 +101,14 @@ public class PostsApiControllerTest {
         PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .author("author")
                 .build();
 
         String url = "http://localhost:" + port + "/api/v1/posts";
 
         //when
+        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
         mvc.perform(post(url)
+                .session(session)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
@@ -96,7 +126,7 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(user)
                 .build());
 
         Long deletedId = savedPosts.getId();
@@ -125,7 +155,7 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(user)
                 .build());
 
         Long id = savedPosts.getId();
@@ -151,19 +181,20 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title1")
                 .content("content1")
-                .author("author1")
+                .user(user)
                 .build());
 
         postsRepository.save(Posts.builder()
                 .title("title2")
                 .content("content2")
-                .author("author2")
+                .user(user)
                 .build());
 
         String url = "http://localhost:" + port + "/api/v1/posts";
 
         // when
         MvcResult result = mvc.perform(get(url)
+                .session(session)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -182,7 +213,7 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(user)
                 .build());
 
         Long updateId = savedPosts.getId();

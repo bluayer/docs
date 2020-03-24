@@ -1,8 +1,10 @@
-package docs.posts;
+package docs.domain.posts;
 
-import docs.domain.posts.Posts;
-import docs.domain.posts.PostsRepository;
+import docs.domain.user.Role;
+import docs.domain.user.User;
+import docs.domain.user.UserRepository;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,31 @@ public class PostsRepositoryTest {
     @Autowired
     PostsRepository postsRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+    private User user;
+
+    @Before
+    public void setUp() {
+        String name = "송정우";
+        String email = "wjddn0728@naver.com";
+        String picture = "hola/dhdhf";
+        Role role = Role.USER;
+
+        user = userRepository.save(User.builder()
+                .name(name)
+                .email(email)
+                .picture(picture)
+                .role(role)
+                .build()
+        );
+    }
+
     @After
     public void cleanup() {
         postsRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -34,7 +58,7 @@ public class PostsRepositoryTest {
         postsRepository.save(Posts.builder()
                 .title(title)
                 .content(content)
-                .author("wjddn0728@naver.com")
+                .user(user)
                 .build()
         );
 
@@ -48,13 +72,13 @@ public class PostsRepositoryTest {
     }
 
     @Test
-    public void BaseTimeEntitiy_Enroll() {
+    public void BaseTimeEntity_Enroll() {
         //given
         LocalDateTime now = LocalDateTime.of(2019, 6, 4, 0, 0, 0);
         postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(user)
                 .build());
 
         //when
