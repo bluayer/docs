@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,7 +70,60 @@ public class UserRepositoryTest {
         assertThat(testPosts.getTitle()).isEqualTo(title);
         assertThat(testPosts.getContent()).isEqualTo(content);
         assertThat(testPosts.getUser().getId()).isEqualTo(user.getId());
+    }
 
+    @Test
+    public void updateUser() {
+        // given
+        String name1 = "송정우";
+        String email1= "wjddn0728@naver.com";
+        String picture1 = "hola/dhdhf";
+        String name2 = "Hi";
+        String email2= "hi@gmail.com";
+        String picture2 = "whole";
+        Role role = Role.USER;
 
+        String testName = "이의천";
+        String testPicture = "whole world";
+
+        String title = "title";
+        String content = "hola";
+
+        List<Posts> testPosts = new ArrayList<>();
+
+        User user1 = userRepository.save(User.builder()
+                .name(name1)
+                .email(email1)
+                .picture(picture1)
+                .role(role)
+                .build()
+        );
+
+        User user2 = userRepository.save(User.builder()
+                .name(name2)
+                .email(email2)
+                .picture(picture2)
+                .role(role)
+                .build()
+        );
+
+        Posts testPost = postsRepository.save(Posts.builder()
+                .title(title)
+                .content(content)
+                .user(user1)
+                .build()
+        );
+
+        testPosts.add(testPost);
+
+        // when
+        user1.update(testName, testPicture);
+        user2.update(testPosts);
+
+        //then
+        assertThat(user1.getName()).isEqualTo(testName);
+        assertThat(user1.getPicture()).isEqualTo(testPicture);
+        assertThat(user2.getPosts().get(0).getTitle()).isEqualTo(title);
+        assertThat(user1.getRoleKey()).isEqualTo(role.getKey());
     }
 }
