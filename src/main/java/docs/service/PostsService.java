@@ -1,7 +1,10 @@
 package docs.service;
 
+import docs.config.auth.dto.OAuthAttributes;
 import docs.domain.posts.Posts;
 import docs.domain.posts.PostsRepository;
+import docs.domain.user.User;
+import docs.domain.user.UserRepository;
 import docs.web.dto.PostsListResponseDto;
 import docs.web.dto.PostsResponseDto;
 import docs.web.dto.PostsSaveRequestDto;
@@ -17,10 +20,25 @@ import java.util.stream.Collectors;
 @Service
 public class PostsService {
     private final PostsRepository postsRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public Long save(PostsSaveRequestDto requestDto) {
-        return postsRepository.save(requestDto.toEntity()).getId();
+    public Long save(PostsSaveRequestDto requestDto, String userEmail) {
+        System.out.println(userEmail);
+
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. email" + userEmail));
+
+        Posts savedPosts = postsRepository.save(Posts.builder()
+                .title(requestDto.getTitle())
+                .content(requestDto.getContent())
+                .user(user)
+                .build()
+        );
+
+        user.update(savedPosts);
+
+        return savedPosts.getId();
     }
 
     @Transactional
@@ -45,6 +63,16 @@ public class PostsService {
     @Transactional(readOnly=true)
     public List<PostsListResponseDto> findAllDesc() {
         return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly=true)
+    public List<PostsListResponseDto> findAllDescById(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. email" + userEmail));
+
+        return postsRepository.findAllDescById(user.getId()).stream()
                 .map(PostsListResponseDto::new)
                 .collect(Collectors.toList());
     }

@@ -1,7 +1,15 @@
 package docs.web;
 
+<<<<<<< Updated upstream
+=======
+import com.fasterxml.jackson.databind.ObjectMapper;
+import docs.config.auth.dto.SessionUser;
+>>>>>>> Stashed changes
 import docs.domain.posts.Posts;
 import docs.domain.posts.PostsRepository;
+import docs.domain.user.Role;
+import docs.domain.user.User;
+import docs.domain.user.UserRepository;
 import docs.web.dto.PostsListResponseDto;
 import docs.web.dto.PostsResponseDto;
 import docs.web.dto.PostsSaveRequestDto;
@@ -14,10 +22,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+<<<<<<< Updated upstream
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+=======
+import org.springframework.http.*;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.test.context.support.WithMockUser;
+>>>>>>> Stashed changes
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Array;
@@ -37,9 +51,53 @@ public class PostsApiControllerTest {
     @Autowired
     private PostsRepository postsRepository;
 
+<<<<<<< Updated upstream
+=======
+    @Autowired
+    private WebApplicationContext context;
+
+    private MockMvc mvc;
+
+    private MockHttpSession session;
+
+    @Autowired
+    UserRepository userRepository;
+
+    private User user;
+
+    @Before
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+
+        List<User> userList;
+        String name = "송정우";
+        String email = "wjddn0728@naver.com";
+        String picture = "hola/dhdhf";
+        Role role = Role.USER;
+
+
+        user = userRepository.save(User.builder()
+                .name(name)
+                .email(email)
+                .picture(picture)
+                .role(role)
+                .build()
+        );
+
+        session = new MockHttpSession();
+        SessionUser sUser = new SessionUser(user);
+        session.setAttribute("user", sUser);
+    }
+
+
+>>>>>>> Stashed changes
     @After
     public void tearDown() throws Exception {
         postsRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -50,13 +108,20 @@ public class PostsApiControllerTest {
         PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .author("author")
                 .build();
 
         String url = "http://localhost:" + port + "/api/v1/posts";
 
         //when
+<<<<<<< Updated upstream
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+=======
+        mvc.perform(post(url)
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isOk());
+>>>>>>> Stashed changes
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -72,7 +137,7 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(user)
                 .build());
 
         Long deletedId = savedPosts.getId();
@@ -92,7 +157,7 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(user)
                 .build());
 
         Long id = savedPosts.getId();
@@ -113,19 +178,28 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title1")
                 .content("content1")
-                .author("author1")
+                .user(user)
                 .build());
 
         postsRepository.save(Posts.builder()
                 .title("title2")
                 .content("content2")
-                .author("author2")
+                .user(user)
                 .build());
 
         Long deletedId = savedPosts.getId();
 
         String url = "http://localhost:" + port + "/api/v1/posts";
 
+<<<<<<< Updated upstream
+=======
+        // when
+        MvcResult result = mvc.perform(get(url)
+                .session(session)
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andReturn();
+>>>>>>> Stashed changes
 
         // when
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY, String.class);
@@ -142,7 +216,7 @@ public class PostsApiControllerTest {
         Posts savedPosts = postsRepository.save(Posts.builder()
                 .title("title")
                 .content("content")
-                .author("author")
+                .user(user)
                 .build());
 
         Long updateId = savedPosts.getId();
