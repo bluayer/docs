@@ -34,7 +34,6 @@ public class OAuthAttributesTest {
         this.attributes.put("name", this.name);
         this.attributes.put("email", this.email);
         this.attributes.put("picture", this.picture);
-
     }
 
 
@@ -66,6 +65,10 @@ public class OAuthAttributesTest {
         // then
         assertThat(testUser.getName()).isEqualTo(this.name);
         assertThat(testGoogleoAuthAttributes.getName()).isEqualTo(this.name);
+        assertThat(testGoogleoAuthAttributes.getEmail()).isEqualTo(this.email);
+        assertThat(testGoogleoAuthAttributes.getPicture()).isEqualTo(this.picture);
+        assertThat(testGoogleoAuthAttributes.getAttributes()).isEqualTo(this.attributes);
+        assertThat(testGoogleoAuthAttributes.getNameAttributeKey()).isEqualTo("google");
         assertThat(testNaveroAuthAttributes.getName()).isEqualTo("이의천");
     }
 

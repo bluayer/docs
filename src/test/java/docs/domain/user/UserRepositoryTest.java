@@ -125,5 +125,6 @@ public class UserRepositoryTest {
         assertThat(user1.getPicture()).isEqualTo(testPicture);
         assertThat(user2.getPosts().get(0).getTitle()).isEqualTo(title);
         assertThat(user1.getRoleKey()).isEqualTo(role.getKey());
+        assertThat(user1.getRole().getTitle()).isEqualTo(role.getTitle());
     }
 }
